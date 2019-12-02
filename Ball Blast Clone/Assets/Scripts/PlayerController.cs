@@ -14,9 +14,12 @@ public class PlayerController : MonoBehaviour
         {
             float step = speed * Time.deltaTime;
             Vector3 target = transform.position;
-            target.x = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+            float targetXValue = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+            target.x = targetXValue > Boundaries.ScreenBounds.x ? Boundaries.ScreenBounds.x : targetXValue < -Boundaries.ScreenBounds.x ? -Boundaries.ScreenBounds.x : targetXValue;
             transform.position = Vector3.MoveTowards(transform.position, target, step);
         }
+
+
     }
 
 }

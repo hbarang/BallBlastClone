@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boundaries : MonoBehaviour
+public static class Boundaries
 {
-    public Vector2 screenBounds;
+    private static Vector2 _screenBounds;
 
-    void Awake()
+    public static Vector2 ScreenBounds
     {
-        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+        get
+        {
+            _screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+            return _screenBounds;
+        }
+
     }
 
 }
