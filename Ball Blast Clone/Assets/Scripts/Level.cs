@@ -3,5 +3,5 @@ using System.Collections.Generic;
 
 [Serializable]
 public class Level{
-    public List<Ball> balls;
+    public Ball[] balls;
 } 
