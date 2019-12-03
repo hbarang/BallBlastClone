@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
     string jsonPath = "Assets/level.json";
     string jsonString;
 
+    private int _currentLevel = 1;
+    private int _ballsSpawned = 0;
+    private float _levelTimer = 0;
+
     GameManagerParameters gameManagerParameters;
 
     void Awake()
@@ -34,21 +38,38 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         LoadJson();
-
-        Debug.Log(gameManagerParameters);
-
-
-        spawnPosition = new Vector3(-Boundaries.ScreenBounds.x, Boundaries.ScreenBounds.y, 0);
-        GameObject Ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
-        Ball.SetActive(true);
+        Physics.gravity = new Vector3(0, gameManagerParameters.gravity, 0);
+        SpawnBall();
+        
     }
 
 
     public void LoadJson()
     {
-
         jsonString = File.ReadAllText(jsonPath);
         gameManagerParameters = GameManagerParameters.CreateFromJSON(jsonString);
+    }
+
+
+    public void SpawnBall(){
+        spawnPosition = new Vector3(-Boundaries.ScreenBounds.x, Boundaries.ScreenBounds.y, 0);
+        foreach (Ball item in gameManagerParameters.levels[_currentLevel-1].balls)
+        {
+            GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
+            BallController ballController = ball.GetComponent<BallController>();
+            
+            ballController.Hp = item.hp;
+            ballController.splits = item.splits;
+
+            StartCoroutine(WaitForDelay(ball, item.delay));
+        }
+    }
+
+    IEnumerator WaitForDelay(GameObject ball, int delay)
+    {
+
+        yield return new WaitForSeconds(delay);
+        ball.SetActive(true);
 
     }
 

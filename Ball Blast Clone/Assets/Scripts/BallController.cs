@@ -57,7 +57,7 @@ public class BallController : MonoBehaviour
         }
     }
 
-    public List<int> splits;
+    public int[] splits;
 
     public GameObject ballPrefab;
 
@@ -106,7 +106,8 @@ public class BallController : MonoBehaviour
 
         if (collidedObjectTag == Tags.Ground)
         {
-            if(isFirstHit){
+            if (isFirstHit)
+            {
                 firstHitVelocity = newVelocity.y;
             }
             newVelocity.x *= -1;

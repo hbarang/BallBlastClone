@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2775716765607208919}
   - component: {fileID: 2775716765607208917}
   - component: {fileID: 2775716765607208918}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: HP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,9 +93,9 @@ GameObject:
   - component: {fileID: 2775716766912364955}
   - component: {fileID: 2775716766912364956}
   - component: {fileID: 2775716766912364951}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 2775716766962172442}
   - component: {fileID: 2775716766962172443}
   - component: {fileID: 2775716766962172444}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: BallText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
