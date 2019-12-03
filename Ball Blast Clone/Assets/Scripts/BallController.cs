@@ -62,6 +62,10 @@ public class BallController : MonoBehaviour
     public GameObject ballPrefab;
 
 
+    private float firstHitVelocity = 0;
+    private bool isFirstHit = true;
+
+
     private Vector3 _spawnHorizontalDirection;
     public Vector3 SpawnHorizontalDirection
     {
@@ -98,9 +102,13 @@ public class BallController : MonoBehaviour
         Vector3 newVelocity = other.relativeVelocity;
         string collidedObjectTag = other.gameObject.tag;
 
+        newVelocity.y = firstHitVelocity == 0 ? other.relativeVelocity.y : firstHitVelocity;
 
         if (collidedObjectTag == Tags.Ground)
         {
+            if(isFirstHit){
+                firstHitVelocity = newVelocity.y;
+            }
             newVelocity.x *= -1;
             ballRigidBody.velocity = newVelocity;
         }
@@ -112,6 +120,7 @@ public class BallController : MonoBehaviour
         }
 
     }
+
 
     private void ChangeBallText(int currentHp)
     {
