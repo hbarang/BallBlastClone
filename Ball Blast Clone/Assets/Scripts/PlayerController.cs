@@ -5,10 +5,23 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 3.0f;
+    public float bulletSpawnRate;
+    public GameObject bulletPrefab;
+
 
 
     void Update()
     {
+        if (Input.GetMouseButtonUp(0))
+        {
+            CancelInvoke();
+
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            InvokeRepeating("SpawnBullets", 0.3f, bulletSpawnRate);
+        }
 
         if (Input.GetMouseButton(0))
         {
@@ -20,6 +33,12 @@ public class PlayerController : MonoBehaviour
         }
 
 
+    }
+
+
+    void SpawnBullets()
+    {
+        Instantiate(bulletPrefab, this.transform.position, Quaternion.identity);
     }
 
 }

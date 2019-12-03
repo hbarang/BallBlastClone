@@ -109,7 +109,6 @@ public class GameManager : MonoBehaviour
         }
         BallsSpawned = gameManagerParameters.levels[CurrentLevel - 1].balls.Length * 3;
 
-        Debug.Log(BallsSpawned);
     }
 
 
