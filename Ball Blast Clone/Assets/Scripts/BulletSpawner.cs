@@ -10,7 +10,7 @@ public class BulletSpawner : MonoBehaviour
 
     void Start()
     {
-        InvokeRepeating("SpawnBullets", 0.3f, 0.5f);
+        InvokeRepeating("SpawnBullets", 0.3f, 0.3f);
     }
 
 

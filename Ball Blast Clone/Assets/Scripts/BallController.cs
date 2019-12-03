@@ -44,7 +44,7 @@ public class BallController : MonoBehaviour
 
     private Rigidbody ballRigidBody;
 
-    private bool _splittable = true;
+    private bool _splittable = false;
     public bool Splittable
     {
         get
@@ -63,6 +63,7 @@ public class BallController : MonoBehaviour
 
 
     private float firstHitVelocity = 0;
+    private float minimumVelocity = 8;
     private bool isFirstHit = true;
 
 
@@ -90,10 +91,10 @@ public class BallController : MonoBehaviour
     private void Start()
     {
         ChangeBallText(_hp);
-        ballRigidBody.AddForce(Vector3.right * 20);
+        ballRigidBody.AddForce(SpawnHorizontalDirection * Random.Range(15f, 30f));
 
         HpChangedEvent += ChangeBallText;
-
+        HpZeroEvent += Split;
     }
 
 
@@ -108,7 +109,7 @@ public class BallController : MonoBehaviour
         {
             if (isFirstHit)
             {
-                firstHitVelocity = newVelocity.y;
+                firstHitVelocity = newVelocity.y < minimumVelocity ? minimumVelocity : newVelocity.y;
             }
             newVelocity.x *= -1;
             ballRigidBody.velocity = newVelocity;
@@ -120,6 +121,12 @@ public class BallController : MonoBehaviour
             ballRigidBody.velocity = newVelocity;
         }
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Hp -= 1;
+        Destroy(other.gameObject);
     }
 
 
@@ -134,25 +141,11 @@ public class BallController : MonoBehaviour
 
         if (Splittable)
         {
-            GameObject split1, split2;
-            BallController ballController1, ballController2;
-            split1 = Instantiate(ballPrefab, transform.position, Quaternion.identity);
-            split2 = Instantiate(ballPrefab, transform.position, Quaternion.identity);
 
-            ballController1 = split1.GetComponent<BallController>();
-            ballController2 = split2.GetComponent<BallController>();
+            CreateBall(splits[0], Vector3.right);
+            CreateBall(splits[1], Vector3.left);
 
-            ballController1.SpawnHorizontalDirection = Vector3.right;
-            ballController2.SpawnHorizontalDirection = Vector3.left;
-
-            ballController1.Hp = splits[0];
-            ballController2.Hp = splits[1];
-
-            ballController1.Splittable = false;
-            ballController2.Splittable = false;
-
-            split1.SetActive(true);
-            split2.SetActive(true);
+            Destroy(this.gameObject);
 
         }
         else
@@ -162,9 +155,25 @@ public class BallController : MonoBehaviour
     }
 
 
+    void CreateBall(int hp, Vector3 spawnDirection)
+    {
+        GameObject split;
+        BallController ballController;
+        split = Instantiate(ballPrefab, transform.position, Quaternion.identity);
+
+        ballController = split.GetComponent<BallController>();
+
+        ballController.SpawnHorizontalDirection = spawnDirection;
+        ballController.Hp = hp;
+
+        split.SetActive(true);
+    }
+
+
     private void OnDestroy()
     {
         HpChangedEvent -= ChangeBallText;
+        GameManager.Instance.BallsSpawned -= 1;
     }
 
 
