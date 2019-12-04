@@ -696,6 +696,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1256397788}
   - component: {fileID: 1256397787}
+  - component: {fileID: 1256397789}
+  - component: {fileID: 1256397790}
   m_Layer: 0
   m_Name: ScriptHolder
   m_TagString: Untagged
@@ -717,6 +719,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballPrefab: {fileID: 2775716766912364957, guid: dcb4a0e0328e14c49879e41b0c8c1e95,
     type: 3}
+  gameManagerParameters:
+    levels: []
+    gravity: 0
+    bullet_count_increase: 0
+    bullet_damage_increase: 0
 --- !u!4 &1256397788
 Transform:
   m_ObjectHideFlags: 0
@@ -731,6 +738,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1256397789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256397786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af64b43aa46d5b848bc8cf508fb2c301, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1256397790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256397786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bef19a9600811ea40867abe3ce7d183d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1775679768
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,7 +10,8 @@ public class BulletController : MonoBehaviour
     public int bulletDamage;
 
 
-    private void Start() {
+    private void Start()
+    {
         bulletDamage = GameManager.Instance.BulletDamage;
     }
 
@@ -18,7 +19,7 @@ public class BulletController : MonoBehaviour
     {
         transform.position += Vector3.up * speed * Time.deltaTime;
 
-        if (transform.position.y > Boundaries.ScreenBounds.y)
+        if (transform.position.y > Boundaries.Instance.ScreenBounds.y)
         {
             Destroy(this.gameObject);
         }
@@ -28,6 +29,6 @@ public class BulletController : MonoBehaviour
 
 
 
-   
+
 
 }

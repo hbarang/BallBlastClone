@@ -61,8 +61,10 @@ public class GameManager : MonoBehaviour
     int lvl5Hp;
 
     int _bulletDamage = 1;
-    public int BulletDamage{
-        get{
+    public int BulletDamage
+    {
+        get
+        {
             return _bulletDamage;
         }
     }
@@ -94,6 +96,8 @@ public class GameManager : MonoBehaviour
         LevelChangedEvent += ChangeBulletDamage;
 
     }
+
+
 
     void setLevel5Hp()
     {
@@ -195,8 +199,8 @@ public class GameManager : MonoBehaviour
         foreach (Ball item in level.balls)
         {
             bool spawnRight = (Random.value > 0.5f);
-            float xPosition = (spawnRight ? 1 : -1) * Boundaries.ScreenBounds.x + (spawnRight ? -1f : 1f);
-            spawnPosition = new Vector3(xPosition, Boundaries.ScreenBounds.y, 0);
+            float xPosition = (spawnRight ? 1 : -1) * Boundaries.Instance.ScreenBounds.x + (spawnRight ? -1f : 1f);
+            spawnPosition = new Vector3(xPosition, Boundaries.Instance.ScreenBounds.y, 0);
 
             IndividualBallSpawn(spawnPosition, item.hp, item.splits, spawnRight ? Vector3.left : Vector3.right, true, item.delay);
 
