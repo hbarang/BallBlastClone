@@ -17,15 +17,22 @@ public class BallController : MonoBehaviour
         {
             if (value <= 0)
             {
+                HpDecreaseEvent(_hp);
                 HpZeroEvent();
             }
 
             else
             {
+                int decrease = _hp - value;
                 _hp = value;
                 if (HpChangedEvent != null)
                 {
                     HpChangedEvent(_hp);
+                }
+
+                if (HpDecreaseEvent != null)
+                {
+                    HpDecreaseEvent(decrease);
                 }
             }
         }
@@ -34,7 +41,7 @@ public class BallController : MonoBehaviour
 
     public delegate void OnHpChange(int currentHp);
     public event OnHpChange HpChangedEvent;
-
+    public event OnHpChange HpDecreaseEvent;
     public delegate void OnHpZero();
     public event OnHpZero HpZeroEvent;
 
@@ -125,7 +132,7 @@ public class BallController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        
+
         Hp -= other.gameObject.GetComponent<BulletController>().bulletDamage;
         Destroy(other.gameObject);
     }
@@ -166,6 +173,7 @@ public class BallController : MonoBehaviour
 
         ballController.SpawnHorizontalDirection = spawnDirection;
         ballController.Hp = hp;
+        ballController.HpDecreaseEvent += GameManager.Instance.ChangeDamageDecreased;
 
         split.SetActive(true);
     }
@@ -174,6 +182,7 @@ public class BallController : MonoBehaviour
     private void OnDestroy()
     {
         HpChangedEvent -= ChangeBallText;
+        HpDecreaseEvent -= GameManager.Instance.ChangeDamageDecreased;
         GameManager.Instance.BallsSpawned -= 1;
     }
 

@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     string jsonPath = "Assets/level.json";
     string jsonString;
 
-    private int _currentLevel = 5;
+    private int _currentLevel = 1;
     public int CurrentLevel
     {
         get
@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         set
         {
             _currentLevel = value;
-
+            CurrentLevelHpDecrease = 0;
             if (LevelChangedEvent != null)
             {
                 LevelChangedEvent();
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     }
 
     public delegate void OnLevelChange();
-    public static event OnLevelChange LevelChangedEvent;
+    public event OnLevelChange LevelChangedEvent;
 
     private int _ballsSpawned = 0;
     public int BallsSpawned
@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     int lvl5Hp;
 
     int _bulletDamage = 1;
+
     public int BulletDamage
     {
         get
@@ -68,6 +69,50 @@ public class GameManager : MonoBehaviour
             return _bulletDamage;
         }
     }
+
+    int _currentLevelTotalHp;
+    public int CurrentLevelTotalHp
+    {
+        get
+        {
+            return _currentLevelTotalHp;
+        }
+        set
+        {
+            _currentLevelTotalHp = value;
+
+            if (CurrentLevelTotalHpChanged != null)
+            {
+                CurrentLevelTotalHpChanged(_currentLevelTotalHp);
+            }
+        }
+    }
+
+    public delegate void OnCurrentLevelTotalHpChange(int hp);
+    public event OnCurrentLevelTotalHpChange CurrentLevelTotalHpChanged;
+
+
+    int _currentLevelHpDecrease;
+    public int CurrentLevelHpDecrease
+    {
+        get
+        {
+            return _currentLevelHpDecrease;
+        }
+        set
+        {
+            _currentLevelHpDecrease = value;
+
+            if (CurrentLevelDamageChanged != null)
+            {
+                CurrentLevelDamageChanged(_currentLevelHpDecrease);
+            }
+        }
+    }
+    public delegate void OnCurrentLevelHpDecreaseChange(int damage);
+    public event OnCurrentLevelHpDecreaseChange CurrentLevelDamageChanged;
+
+
     void Awake()
     {
 
@@ -120,14 +165,14 @@ public class GameManager : MonoBehaviour
 
         if (_currentLevel <= 5)
         {
-            SpawnBallFromLevel(gameManagerParameters.levels[_currentLevel - 1]);
+            CurrentLevelTotalHp = SpawnBallFromLevel(gameManagerParameters.levels[_currentLevel - 1]);
             BallsSpawned = gameManagerParameters.levels[CurrentLevel - 1].balls.Length * 3;
         }
 
         else
         {
             GenerateLevel(4);
-            SpawnBallFromLevel(generatedLevel);
+            CurrentLevelTotalHp = SpawnBallFromLevel(generatedLevel);
             BallsSpawned = generatedLevel.balls.Length * 3;
         }
 
@@ -190,12 +235,15 @@ public class GameManager : MonoBehaviour
         ballController.SpawnHorizontalDirection = SpawnDirection;
         ballController.Splittable = splittable;
 
+        ballController.HpDecreaseEvent += ChangeDamageDecreased;
+
         StartCoroutine(WaitForDelay(ball, delay));
 
     }
 
-    public void SpawnBallFromLevel(Level level)
+    public int SpawnBallFromLevel(Level level)
     {
+        int totalHp = 0;
         foreach (Ball item in level.balls)
         {
             bool spawnRight = (Random.value > 0.5f);
@@ -203,8 +251,10 @@ public class GameManager : MonoBehaviour
             spawnPosition = new Vector3(xPosition, Boundaries.Instance.ScreenBounds.y, 0);
 
             IndividualBallSpawn(spawnPosition, item.hp, item.splits, spawnRight ? Vector3.left : Vector3.right, true, item.delay);
-
+            totalHp += item.hp + item.splits[0] + item.splits[1];
         }
+
+        return totalHp;
     }
 
 
@@ -221,6 +271,11 @@ public class GameManager : MonoBehaviour
     void ChangeBulletDamage()
     {
         _bulletDamage += gameManagerParameters.bullet_damage_increase;
+    }
+
+    public void ChangeDamageDecreased(int damage)
+    {
+        CurrentLevelHpDecrease += damage;
     }
 
 }
