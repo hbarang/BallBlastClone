@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -56,6 +57,9 @@ public class GameManager : MonoBehaviour
 
     GameManagerParameters gameManagerParameters;
 
+    Level generatedLevel;
+    int lvl5Hp;
+
     void Awake()
     {
 
@@ -78,9 +82,17 @@ public class GameManager : MonoBehaviour
         Physics.gravity = new Vector3(0, gameManagerParameters.gravity, 0);
         SpawnBall();
         LevelChangedEvent += SpawnBall;
+        setLevel5Hp();
+        GenerateLevel();
     }
 
-
+    void setLevel5Hp()
+    {
+        foreach (Ball item in gameManagerParameters.levels[4].balls)
+        {
+            lvl5Hp += item.hp + item.splits[0] + item.splits[1];
+        }
+    }
 
     public void LoadJson()
     {
@@ -92,22 +104,69 @@ public class GameManager : MonoBehaviour
     public void SpawnBall()
     {
 
-        foreach (Ball item in gameManagerParameters.levels[_currentLevel - 1].balls)
+        if (_currentLevel <= 5)
         {
-            bool spawnRight = (Random.value > 0.5f);
-            float xPosition = (spawnRight ? 1 : -1) * Boundaries.ScreenBounds.x + (spawnRight ? -1f : 1f);
-            spawnPosition = new Vector3(xPosition, Boundaries.ScreenBounds.y, 0);
-            GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
-            BallController ballController = ball.GetComponent<BallController>();
+            foreach (Ball item in gameManagerParameters.levels[_currentLevel - 1].balls)
+            {
+                bool spawnRight = (Random.value > 0.5f);
+                float xPosition = (spawnRight ? 1 : -1) * Boundaries.ScreenBounds.x + (spawnRight ? -1f : 1f);
+                spawnPosition = new Vector3(xPosition, Boundaries.ScreenBounds.y, 0);
 
-            ballController.Hp = item.hp;
-            ballController.splits = item.splits;
-            ballController.SpawnHorizontalDirection = spawnRight ? Vector3.left : Vector3.right;
-            ballController.Splittable = true;
+                IndividualBallSpawn(spawnPosition, item.hp, item.splits, spawnRight ? Vector3.left : Vector3.right, true, item.delay);
 
-            StartCoroutine(WaitForDelay(ball, item.delay));
+            }
+        }
+        else
+        {
+
         }
         BallsSpawned = gameManagerParameters.levels[CurrentLevel - 1].balls.Length * 3;
+
+    }
+
+    public void GenerateLevel()
+    {
+        int newLevelHp = ((Random.value > 0.5f) ? lvl5Hp * 80 : lvl5Hp * 120) / 100;
+        int initialBallsTotalHp = newLevelHp / 2;
+        int splitBallsTotalHp = initialBallsTotalHp;
+
+        List<int> initialBallsHpList = new List<int>();
+        List<int> splitBallsHpList = new List<int>();
+
+
+        for (int initialBallIndex = 0; initialBallIndex < 4; initialBallIndex++)
+        {
+
+            if (initialBallIndex == 3)
+            {
+                initialBallsHpList.Add(initialBallsTotalHp);
+                splitBallsHpList.Add(splitBallsTotalHp);
+                break;
+            }
+
+            initialBallsHpList.Add(Random.Range(6, initialBallsTotalHp/2));
+            initialBallsTotalHp -= initialBallsHpList[initialBallIndex];
+
+            splitBallsHpList.Add(Random.Range(initialBallsHpList[initialBallIndex]/2, initialBallsHpList[initialBallIndex]));    
+            splitBallsTotalHp -= splitBallsHpList[initialBallIndex] * 2;
+
+
+        }
+
+    }
+
+
+    public void IndividualBallSpawn(Vector3 spawnPosition, int hp, int[] splits, Vector3 SpawnDirection, bool splittable, int delay)
+    {
+        GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
+        BallController ballController = ball.GetComponent<BallController>();
+
+        ballController.Hp = hp;
+        ballController.splits = splits;
+        ballController.SpawnHorizontalDirection = SpawnDirection;
+        ballController.Splittable = splittable;
+
+        StartCoroutine(WaitForDelay(ball, delay));
 
     }
 
