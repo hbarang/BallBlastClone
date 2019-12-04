@@ -55,11 +55,17 @@ public class GameManager : MonoBehaviour
     }
 
 
-    GameManagerParameters gameManagerParameters;
+    public GameManagerParameters gameManagerParameters;
 
     Level generatedLevel;
     int lvl5Hp;
 
+    int _bulletDamage = 1;
+    public int BulletDamage{
+        get{
+            return _bulletDamage;
+        }
+    }
     void Awake()
     {
 
@@ -76,13 +82,16 @@ public class GameManager : MonoBehaviour
 
     }
 
+
     private void Start()
     {
         LoadJson();
         Physics.gravity = new Vector3(0, gameManagerParameters.gravity, 0);
         SpawnBall();
-        LevelChangedEvent += SpawnBall;
         setLevel5Hp();
+
+        LevelChangedEvent += SpawnBall;
+        LevelChangedEvent += ChangeBulletDamage;
 
     }
 
@@ -93,6 +102,7 @@ public class GameManager : MonoBehaviour
             lvl5Hp += item.hp + item.splits[0] + item.splits[1];
         }
     }
+
 
     public void LoadJson()
     {
@@ -117,9 +127,10 @@ public class GameManager : MonoBehaviour
             BallsSpawned = generatedLevel.balls.Length * 3;
         }
 
-        
+
 
     }
+
 
     public void GenerateLevel(int numberOfBalls)
     {
@@ -164,6 +175,7 @@ public class GameManager : MonoBehaviour
     }
 
 
+
     public void IndividualBallSpawn(Vector3 spawnPosition, int hp, int[] splits, Vector3 SpawnDirection, bool splittable, int delay)
     {
         GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
@@ -191,6 +203,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+
     IEnumerator WaitForDelay(GameObject ball, int delay)
     {
 
@@ -199,5 +213,10 @@ public class GameManager : MonoBehaviour
 
     }
 
+
+    void ChangeBulletDamage()
+    {
+        _bulletDamage += gameManagerParameters.bullet_damage_increase;
+    }
 
 }

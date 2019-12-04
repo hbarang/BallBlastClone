@@ -125,7 +125,8 @@ public class BallController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Hp -= 1;
+        
+        Hp -= other.gameObject.GetComponent<BulletController>().bulletDamage;
         Destroy(other.gameObject);
     }
 

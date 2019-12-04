@@ -7,7 +7,12 @@ public class BulletController : MonoBehaviour
     public float speed;
     private Vector2 screenBounds;
 
+    public int bulletDamage;
 
+
+    private void Start() {
+        bulletDamage = GameManager.Instance.BulletDamage;
+    }
 
     private void Update()
     {
@@ -21,5 +26,8 @@ public class BulletController : MonoBehaviour
     }
 
 
+
+
+   
 
 }
