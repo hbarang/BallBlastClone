@@ -7,4 +7,9 @@ public class Ball{
     public int[] splits;
     public int delay;
 
+    public Ball()
+    {
+        splits = new int[2];
+    }
+
 }

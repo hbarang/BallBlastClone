@@ -15,7 +15,7 @@ public class BallController : MonoBehaviour
         }
         set
         {
-            if (value == 0)
+            if (value <= 0)
             {
                 HpZeroEvent();
             }

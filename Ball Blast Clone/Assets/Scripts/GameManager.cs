@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     string jsonPath = "Assets/level.json";
     string jsonString;
 
-    private int _currentLevel = 1;
+    private int _currentLevel = 5;
     public int CurrentLevel
     {
         get
@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
         SpawnBall();
         LevelChangedEvent += SpawnBall;
         setLevel5Hp();
-        GenerateLevel();
+
     }
 
     void setLevel5Hp()
@@ -106,25 +106,22 @@ public class GameManager : MonoBehaviour
 
         if (_currentLevel <= 5)
         {
-            foreach (Ball item in gameManagerParameters.levels[_currentLevel - 1].balls)
-            {
-                bool spawnRight = (Random.value > 0.5f);
-                float xPosition = (spawnRight ? 1 : -1) * Boundaries.ScreenBounds.x + (spawnRight ? -1f : 1f);
-                spawnPosition = new Vector3(xPosition, Boundaries.ScreenBounds.y, 0);
-
-                IndividualBallSpawn(spawnPosition, item.hp, item.splits, spawnRight ? Vector3.left : Vector3.right, true, item.delay);
-
-            }
+            SpawnBallFromLevel(gameManagerParameters.levels[_currentLevel - 1]);
+            BallsSpawned = gameManagerParameters.levels[CurrentLevel - 1].balls.Length * 3;
         }
+
         else
         {
-
+            GenerateLevel(4);
+            SpawnBallFromLevel(generatedLevel);
+            BallsSpawned = generatedLevel.balls.Length * 3;
         }
-        BallsSpawned = gameManagerParameters.levels[CurrentLevel - 1].balls.Length * 3;
+
+        
 
     }
 
-    public void GenerateLevel()
+    public void GenerateLevel(int numberOfBalls)
     {
         int newLevelHp = ((Random.value > 0.5f) ? lvl5Hp * 80 : lvl5Hp * 120) / 100;
         int initialBallsTotalHp = newLevelHp / 2;
@@ -133,24 +130,35 @@ public class GameManager : MonoBehaviour
         List<int> initialBallsHpList = new List<int>();
         List<int> splitBallsHpList = new List<int>();
 
+        generatedLevel = new Level(numberOfBalls);
 
-        for (int initialBallIndex = 0; initialBallIndex < 4; initialBallIndex++)
+        for (int initialBallIndex = 0; initialBallIndex < numberOfBalls; initialBallIndex++)
         {
 
-            if (initialBallIndex == 3)
+            if (initialBallIndex == numberOfBalls - 1)
             {
                 initialBallsHpList.Add(initialBallsTotalHp);
                 splitBallsHpList.Add(splitBallsTotalHp);
                 break;
             }
 
-            initialBallsHpList.Add(Random.Range(6, initialBallsTotalHp/2));
+            initialBallsHpList.Add(Random.Range(6, initialBallsTotalHp / 2));
             initialBallsTotalHp -= initialBallsHpList[initialBallIndex];
 
-            splitBallsHpList.Add(Random.Range(initialBallsHpList[initialBallIndex]/2, initialBallsHpList[initialBallIndex]));    
+            splitBallsHpList.Add(Random.Range(initialBallsHpList[initialBallIndex] / 2, initialBallsHpList[initialBallIndex]));
             splitBallsTotalHp -= splitBallsHpList[initialBallIndex] * 2;
 
 
+        }
+
+        int indexCounter = 0;
+
+        foreach (Ball item in generatedLevel.balls)
+        {
+            item.hp = initialBallsHpList[indexCounter];
+            item.splits[0] = item.splits[1] = splitBallsHpList[indexCounter] / 2;
+            item.delay = indexCounter * Random.Range(1, 4);
+            indexCounter += 1;
         }
 
     }
@@ -170,6 +178,18 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void SpawnBallFromLevel(Level level)
+    {
+        foreach (Ball item in level.balls)
+        {
+            bool spawnRight = (Random.value > 0.5f);
+            float xPosition = (spawnRight ? 1 : -1) * Boundaries.ScreenBounds.x + (spawnRight ? -1f : 1f);
+            spawnPosition = new Vector3(xPosition, Boundaries.ScreenBounds.y, 0);
+
+            IndividualBallSpawn(spawnPosition, item.hp, item.splits, spawnRight ? Vector3.left : Vector3.right, true, item.delay);
+
+        }
+    }
 
     IEnumerator WaitForDelay(GameObject ball, int delay)
     {
