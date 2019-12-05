@@ -24,16 +24,27 @@ public class GameManager : MonoBehaviour
         set
         {
             _currentLevel = value;
+
+            if (ActivateGameWonEvent != null && value != 1)
+            {
+                Time.timeScale = 0f;
+                ActivateGameWonEvent();
+            }
+
             CurrentLevelHpDecrease = 0;
+
             if (LevelChangedEvent != null)
             {
                 LevelChangedEvent();
             }
+
         }
     }
 
     public delegate void OnLevelChange();
     public event OnLevelChange LevelChangedEvent;
+
+    public event OnLevelChange ActivateGameWonEvent;
 
     private int _ballsSpawned = 0;
     public int BallsSpawned
@@ -130,7 +141,7 @@ public class GameManager : MonoBehaviour
     }
     public delegate void OnGameStart();
     public event OnGameStart GameStartedEvent;
-    
+
 
     void Awake()
     {

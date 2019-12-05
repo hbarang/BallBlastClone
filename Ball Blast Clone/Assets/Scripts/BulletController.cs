@@ -13,6 +13,7 @@ public class BulletController : MonoBehaviour
     private void Start()
     {
         bulletDamage = GameManager.Instance.BulletDamage;
+        GameManager.Instance.LevelChangedEvent += DeleteBullet;
     }
 
     private void Update()
@@ -27,8 +28,15 @@ public class BulletController : MonoBehaviour
     }
 
 
+    void DeleteBullet()
+    {
+        Destroy(this.gameObject);
+    }
 
+    private void OnDestroy()
+    {
+        GameManager.Instance.LevelChangedEvent -= DeleteBullet;
 
-
+    }
 
 }

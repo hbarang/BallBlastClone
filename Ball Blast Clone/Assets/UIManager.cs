@@ -6,10 +6,10 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject InGameScreenCanvas, StartScreenCanvas;
+    public GameObject InGameScreenCanvas, StartScreenCanvas, GameWonScreenCanvas;
     public static UIManager Instance;
-    private TextMeshProUGUI DamageDealtText, TotalHpText, LevelText;
-    public Button TouchToPlayButton;
+    private TextMeshProUGUI DamageDealtText, TotalHpText, LevelText, GameWonScore;
+    public Button TouchToPlayButton, GameWonReplayButton;
 
     private void Awake()
     {
@@ -30,6 +30,9 @@ public class UIManager : MonoBehaviour
 
         TouchToPlayButton = StartScreenCanvas.transform.GetChild(0).GetComponent<Button>();
 
+        GameWonReplayButton = GameWonScreenCanvas.transform.GetChild(0).GetComponent<Button>();
+        GameWonScore = GameWonScreenCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+
     }
 
     void Start()
@@ -45,7 +48,9 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.CurrentLevelDamageChanged += ChangeDamageDealtText;
         GameManager.Instance.LevelChangedEvent += ChangeLevelText;
         GameManager.Instance.GameStartedEvent += ActivateInGameScreen;
+        GameManager.Instance.ActivateGameWonEvent += ActivateGameWonScreen;
 
+        GameWonReplayButton.onClick.AddListener(GameWonReplayButtonClicked);
 
     }
 
@@ -73,6 +78,8 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.CurrentLevelTotalHpChanged -= ChangeHpText;
         GameManager.Instance.LevelChangedEvent -= ChangeLevelText;
         GameManager.Instance.GameStartedEvent -= ActivateInGameScreen;
+        GameManager.Instance.ActivateGameWonEvent -= ActivateGameWonScreen;
+
 
     }
 
@@ -80,8 +87,22 @@ public class UIManager : MonoBehaviour
     {
 
         StartScreenCanvas.gameObject.SetActive(false);
-        InGameScreenCanvas.gameObject.SetActive(true);
+        InGameScreenCanvas.gameObject.SetActive(!GameWonScreenCanvas.activeInHierarchy);
 
+    }
+
+    void ActivateGameWonScreen()
+    {
+        GameWonScore.text = DamageDealtText.text;
+        InGameScreenCanvas.gameObject.SetActive(false);
+        GameWonScreenCanvas.gameObject.SetActive(true);
+    }
+
+    void GameWonReplayButtonClicked()
+    {
+        Time.timeScale = 1f;
+        InGameScreenCanvas.gameObject.SetActive(true);
+        GameWonScreenCanvas.gameObject.SetActive(false);
     }
 
 
