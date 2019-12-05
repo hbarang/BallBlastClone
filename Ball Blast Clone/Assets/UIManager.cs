@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.ActivateGameWonEvent += ActivateGameWonScreen;
 
         PlayerController.Instance.PlayerHitEvent += ActivateGameLostScreen;
-        
+
 
         GameWonReplayButton.onClick.AddListener(GameWonReplayButtonClicked);
         GameLostReplayButton.onClick.AddListener(GameLostReplayButtonClicked);
@@ -125,6 +125,8 @@ public class UIManager : MonoBehaviour
         InGameScreenCanvas.gameObject.SetActive(true);
         GameLostScreenCanvas.gameObject.SetActive(false);
         GameManager.Instance.GameOver = false;
+        GameManager.Instance.CurrentLevelHpDecrease = 0;
+
 
     }
 

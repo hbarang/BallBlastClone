@@ -181,6 +181,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.TouchToPlayButton.onClick.AddListener(StartGame);
 
         InstantiatedBalls = new List<GameObject>();
+        Time.timeScale = 0f;
 
     }
 
@@ -189,6 +190,8 @@ public class GameManager : MonoBehaviour
     {
         CurrentLevel = 1;
         GameStarted = true;
+        Time.timeScale = 1f;
+        
     }
 
 
@@ -339,7 +342,6 @@ public class GameManager : MonoBehaviour
     void ReplayLevel()
     {
         Time.timeScale = 0f;
-        CurrentLevelHpDecrease = 0;
         DestroyUnspawnedBalls();
 
         SpawnBall();
