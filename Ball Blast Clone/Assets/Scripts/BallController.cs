@@ -102,6 +102,8 @@ public class BallController : MonoBehaviour
 
         HpChangedEvent += ChangeBallText;
         HpZeroEvent += Split;
+        PlayerController.Instance.PlayerHitEvent += DestroyOnGameOver;
+
     }
 
 
@@ -183,10 +185,19 @@ public class BallController : MonoBehaviour
     {
         HpChangedEvent -= ChangeBallText;
         HpDecreaseEvent -= GameManager.Instance.ChangeDamageDecreased;
-        GameManager.Instance.BallsSpawned -= 1;
+        PlayerController.Instance.PlayerHitEvent -= DestroyOnGameOver;
+
+        if (!GameManager.Instance.GameOver)
+        {
+            GameManager.Instance.BallsSpawned -= 1;
+        }
+
     }
 
-
+    void DestroyOnGameOver()
+    {
+        Destroy(this.gameObject);
+    }
 
 
 }

@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     string jsonPath = "Assets/level.json";
     string jsonString;
 
+    List<GameObject> InstantiatedBalls;
+
     private int _currentLevel = 0;
     public int CurrentLevel
     {
@@ -23,22 +25,26 @@ public class GameManager : MonoBehaviour
         }
         set
         {
-            _currentLevel = value;
-
-            if (ActivateGameWonEvent != null && value != 1)
+            if (!GameOver)
             {
-                Time.timeScale = 0f;
-                ActivateGameWonEvent();
-            }
+                _currentLevel = value;
 
-            CurrentLevelHpDecrease = 0;
+                if (ActivateGameWonEvent != null && value != 1)
+                {
+                    Time.timeScale = 0f;
+                    ActivateGameWonEvent();
+                }
 
-            if (LevelChangedEvent != null)
-            {
-                LevelChangedEvent();
+                CurrentLevelHpDecrease = 0;
+
+                if (LevelChangedEvent != null)
+                {
+                    LevelChangedEvent();
+                }
             }
 
         }
+
     }
 
     public delegate void OnLevelChange();
@@ -58,7 +64,7 @@ public class GameManager : MonoBehaviour
         {
             _ballsSpawned = value;
 
-            if (value == 0)
+            if (value == 0 && !GameOver)
             {
                 CurrentLevel += 1;
             }
@@ -142,6 +148,7 @@ public class GameManager : MonoBehaviour
     public delegate void OnGameStart();
     public event OnGameStart GameStartedEvent;
 
+    public bool GameOver = false;
 
     void Awake()
     {
@@ -168,9 +175,15 @@ public class GameManager : MonoBehaviour
 
         LevelChangedEvent += SpawnBall;
         LevelChangedEvent += ChangeBulletDamage;
+
+        PlayerController.Instance.PlayerHitEvent += ReplayLevel;
+
         UIManager.Instance.TouchToPlayButton.onClick.AddListener(StartGame);
 
+        InstantiatedBalls = new List<GameObject>();
+
     }
+
 
     void StartGame()
     {
@@ -263,6 +276,7 @@ public class GameManager : MonoBehaviour
     public void IndividualBallSpawn(Vector3 spawnPosition, int hp, int[] splits, Vector3 SpawnDirection, bool splittable, int delay)
     {
         GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
+        InstantiatedBalls.Add(ball);
         BallController ballController = ball.GetComponent<BallController>();
 
         ballController.Hp = hp;
@@ -298,19 +312,52 @@ public class GameManager : MonoBehaviour
     {
 
         yield return new WaitForSeconds(delay);
-        ball.SetActive(true);
+
+        if (ball != null)
+        {
+            ball.SetActive(true);
+        }
+
 
     }
 
 
     void ChangeBulletDamage()
     {
-        _bulletDamage += gameManagerParameters.bullet_damage_increase;
+        if (_currentLevel != 1)
+        {
+            _bulletDamage += gameManagerParameters.bullet_damage_increase;
+        }
     }
 
     public void ChangeDamageDecreased(int damage)
     {
         CurrentLevelHpDecrease += damage;
+    }
+
+
+    void ReplayLevel()
+    {
+        Time.timeScale = 0f;
+        CurrentLevelHpDecrease = 0;
+        DestroyUnspawnedBalls();
+
+        SpawnBall();
+    }
+
+    void DestroyUnspawnedBalls()
+    {
+
+        foreach (GameObject item in InstantiatedBalls)
+        {
+            if (item != null)
+            {
+                Destroy(item);
+            }
+        }
+
+        InstantiatedBalls.Clear();
+
     }
 
 }

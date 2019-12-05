@@ -8,6 +8,25 @@ public class PlayerController : MonoBehaviour
     public float bulletSpawnRate;
     public GameObject bulletPrefab;
 
+    public delegate void OnPlayerHit();
+    public event OnPlayerHit PlayerHitEvent;
+
+    public static PlayerController Instance;
+
+
+    private void Awake()
+    {
+
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(Instance);
+        }
+
+    }
 
 
     void Update()
@@ -32,6 +51,20 @@ public class PlayerController : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, target, step);
         }
 
+
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+
+        if (other.gameObject.tag == Tags.Ball)
+        {
+            if (PlayerHitEvent != null)
+            {
+                GameManager.Instance.GameOver = true;
+                PlayerHitEvent();
+            }
+        }
 
     }
 

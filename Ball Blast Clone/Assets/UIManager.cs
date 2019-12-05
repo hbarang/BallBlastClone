@@ -6,10 +6,10 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject InGameScreenCanvas, StartScreenCanvas, GameWonScreenCanvas;
+    public GameObject InGameScreenCanvas, StartScreenCanvas, GameWonScreenCanvas, GameLostScreenCanvas;
     public static UIManager Instance;
-    private TextMeshProUGUI DamageDealtText, TotalHpText, LevelText, GameWonScore;
-    public Button TouchToPlayButton, GameWonReplayButton;
+    private TextMeshProUGUI DamageDealtText, TotalHpText, LevelText, GameWonScore, GameLostScore;
+    public Button TouchToPlayButton, GameWonReplayButton, GameLostReplayButton;
 
     private void Awake()
     {
@@ -33,6 +33,9 @@ public class UIManager : MonoBehaviour
         GameWonReplayButton = GameWonScreenCanvas.transform.GetChild(0).GetComponent<Button>();
         GameWonScore = GameWonScreenCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
 
+        GameLostReplayButton = GameLostScreenCanvas.transform.GetChild(0).GetComponent<Button>();
+        GameLostScore = GameLostScreenCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+
     }
 
     void Start()
@@ -47,11 +50,15 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.CurrentLevelTotalHpChanged += ChangeHpText;
         GameManager.Instance.CurrentLevelDamageChanged += ChangeDamageDealtText;
         GameManager.Instance.LevelChangedEvent += ChangeLevelText;
+
         GameManager.Instance.GameStartedEvent += ActivateInGameScreen;
         GameManager.Instance.ActivateGameWonEvent += ActivateGameWonScreen;
 
-        GameWonReplayButton.onClick.AddListener(GameWonReplayButtonClicked);
+        PlayerController.Instance.PlayerHitEvent += ActivateGameLostScreen;
+        
 
+        GameWonReplayButton.onClick.AddListener(GameWonReplayButtonClicked);
+        GameLostReplayButton.onClick.AddListener(GameLostReplayButtonClicked);
     }
 
 
@@ -103,6 +110,22 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1f;
         InGameScreenCanvas.gameObject.SetActive(true);
         GameWonScreenCanvas.gameObject.SetActive(false);
+    }
+
+    void ActivateGameLostScreen()
+    {
+        GameLostScore.text = DamageDealtText.text;
+        InGameScreenCanvas.gameObject.SetActive(false);
+        GameLostScreenCanvas.gameObject.SetActive(true);
+    }
+
+    void GameLostReplayButtonClicked()
+    {
+        Time.timeScale = 1f;
+        InGameScreenCanvas.gameObject.SetActive(true);
+        GameLostScreenCanvas.gameObject.SetActive(false);
+        GameManager.Instance.GameOver = false;
+
     }
 
 
