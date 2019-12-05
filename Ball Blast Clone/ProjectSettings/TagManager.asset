@@ -8,6 +8,7 @@ TagManager:
   - BorderLeft
   - BorderRight
   - Ball
+  - BorderUpper
   layers:
   - Default
   - TransparentFX

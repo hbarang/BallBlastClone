@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 
     List<GameObject> InstantiatedBalls;
 
-    private int _currentLevel = 0;
+    private int _currentLevel = 6;
     public int CurrentLevel
     {
         get
@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
     public GameManagerParameters gameManagerParameters;
 
     Level generatedLevel;
-    int lvl5Hp;
+    int handPickedLevelCapHp;
 
     int _bulletDamage = 1;
 
@@ -150,6 +150,11 @@ public class GameManager : MonoBehaviour
 
     public bool GameOver = false;
 
+    public int HandPickedLevelCap = 5;
+    public int MaximumBallCap = 4;
+    public int BulletPerSecondCap;
+    public int BulletDamageCap;
+
     void Awake()
     {
 
@@ -171,7 +176,7 @@ public class GameManager : MonoBehaviour
     {
         LoadJson();
         Physics.gravity = new Vector3(0, gameManagerParameters.gravity, 0);
-        setLevel5Hp();
+        setLevelCapHp();
 
         LevelChangedEvent += SpawnBall;
         LevelChangedEvent += ChangeBulletDamage;
@@ -182,6 +187,9 @@ public class GameManager : MonoBehaviour
 
         InstantiatedBalls = new List<GameObject>();
         Time.timeScale = 0f;
+        
+        BulletPerSecondCap = 1 + HandPickedLevelCap * gameManagerParameters.bullet_count_increase;
+        BulletDamageCap = 1 + HandPickedLevelCap * gameManagerParameters.bullet_damage_increase;
 
     }
 
@@ -191,15 +199,15 @@ public class GameManager : MonoBehaviour
         CurrentLevel = 1;
         GameStarted = true;
         Time.timeScale = 1f;
-        
+
     }
 
 
-    void setLevel5Hp()
+    void setLevelCapHp()
     {
-        foreach (Ball item in gameManagerParameters.levels[4].balls)
+        foreach (Ball item in gameManagerParameters.levels[HandPickedLevelCap - 1].balls)
         {
-            lvl5Hp += item.hp + item.splits[0] + item.splits[1];
+            handPickedLevelCapHp += item.hp + item.splits[0] + item.splits[1];
         }
     }
 
@@ -214,7 +222,7 @@ public class GameManager : MonoBehaviour
     public void SpawnBall()
     {
 
-        if (_currentLevel <= 5)
+        if (_currentLevel <= HandPickedLevelCap)
         {
             CurrentLevelTotalHp = SpawnBallFromLevel(gameManagerParameters.levels[_currentLevel - 1]);
             BallsSpawned = gameManagerParameters.levels[CurrentLevel - 1].balls.Length * 3;
@@ -222,7 +230,7 @@ public class GameManager : MonoBehaviour
 
         else
         {
-            GenerateLevel(4);
+            GenerateLevel(MaximumBallCap);
             CurrentLevelTotalHp = SpawnBallFromLevel(generatedLevel);
             BallsSpawned = generatedLevel.balls.Length * 3;
         }
@@ -231,10 +239,11 @@ public class GameManager : MonoBehaviour
 
     }
 
-
+    private int GeneratedLevelHpLowerPercantage = 80;
+    private int GeneratedLevelHpUpperPercantage = 80;
     public void GenerateLevel(int numberOfBalls)
     {
-        int newLevelHp = ((Random.value > 0.5f) ? lvl5Hp * 80 : lvl5Hp * 120) / 100;
+        int newLevelHp = ((Random.value > 0.5f) ? handPickedLevelCapHp * GeneratedLevelHpLowerPercantage : handPickedLevelCapHp * GeneratedLevelHpUpperPercantage) / 100;
         int initialBallsTotalHp = newLevelHp / 2;
         int splitBallsTotalHp = initialBallsTotalHp;
 
@@ -300,7 +309,7 @@ public class GameManager : MonoBehaviour
         {
             bool spawnRight = (Random.value > 0.5f);
             float xPosition = (spawnRight ? 1 : -1) * Boundaries.Instance.ScreenBounds.x + (spawnRight ? -1f : 1f);
-            spawnPosition = new Vector3(xPosition, Boundaries.Instance.ScreenBounds.y, 0);
+            spawnPosition = new Vector3(xPosition, Boundaries.Instance.ScreenBounds.y - 1, 0);
 
             IndividualBallSpawn(spawnPosition, item.hp, item.splits, spawnRight ? Vector3.left : Vector3.right, true, item.delay);
             totalHp += item.hp + item.splits[0] + item.splits[1];
@@ -327,7 +336,7 @@ public class GameManager : MonoBehaviour
 
     void ChangeBulletDamage()
     {
-        if (_currentLevel != 1)
+        if (_currentLevel != 1 && _bulletDamage < BulletDamageCap)
         {
             _bulletDamage += gameManagerParameters.bullet_damage_increase;
         }

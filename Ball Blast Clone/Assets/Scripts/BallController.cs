@@ -17,8 +17,15 @@ public class BallController : MonoBehaviour
         {
             if (value <= 0)
             {
-                HpDecreaseEvent(_hp);
-                HpZeroEvent();
+                if (HpDecreaseEvent != null)
+                {
+                    HpDecreaseEvent(_hp);
+                }
+                if (HpZeroEvent != null)
+                {
+                    HpZeroEvent();
+
+                }
             }
 
             else
@@ -73,7 +80,8 @@ public class BallController : MonoBehaviour
     private float minimumVelocity = 8;
     private bool isFirstHit = true;
 
-
+    private Vector3 upperRight = new Vector3(1.3f, 1.5f, 0);
+    private Vector3 upperLeft = new Vector3(-1.3f, 1.5f, 0);
     private Vector3 _spawnHorizontalDirection;
     public Vector3 SpawnHorizontalDirection
     {
@@ -98,7 +106,7 @@ public class BallController : MonoBehaviour
     private void Start()
     {
         ChangeBallText(_hp);
-        ballRigidBody.AddForce(SpawnHorizontalDirection * Random.Range(15f, 30f));
+        ballRigidBody.AddForce(SpawnHorizontalDirection * 30);
 
         HpChangedEvent += ChangeBallText;
         HpZeroEvent += Split;
@@ -120,6 +128,7 @@ public class BallController : MonoBehaviour
             {
                 firstHitVelocity = newVelocity.y < minimumVelocity ? minimumVelocity : newVelocity.y;
             }
+            isFirstHit = false;
             newVelocity.x *= -1;
             ballRigidBody.velocity = newVelocity;
         }
@@ -130,13 +139,21 @@ public class BallController : MonoBehaviour
             ballRigidBody.velocity = newVelocity;
         }
 
+        if (collidedObjectTag == Tags.BorderUpper)
+        {
+            newVelocity.y = -ballRigidBody.velocity.y;
+            ballRigidBody.velocity = newVelocity;
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-
-        Hp -= other.gameObject.GetComponent<BulletController>().bulletDamage;
-        Destroy(other.gameObject);
+        if (other.gameObject.GetComponent<BulletController>() != null && this != null)
+        {
+            Hp -= other.gameObject.GetComponent<BulletController>().bulletDamage;
+            Destroy(other.gameObject);
+        }
     }
 
 
@@ -152,15 +169,15 @@ public class BallController : MonoBehaviour
         if (Splittable)
         {
 
-            CreateBall(splits[0], Vector3.right);
-            CreateBall(splits[1], Vector3.left);
+            CreateBall(splits[0], upperRight);
+            CreateBall(splits[1], upperLeft);
 
             Destroy(this.gameObject);
 
         }
         else
         {
-            Destroy(this.gameObject);//This might be a problem, maybe wait for a few seconds before destroying -- delegate issues
+            Destroy(this.gameObject);
         }
     }
 
@@ -169,6 +186,7 @@ public class BallController : MonoBehaviour
     {
         GameObject split;
         BallController ballController;
+        Rigidbody ballRigidBody;
         split = Instantiate(ballPrefab, transform.position, Quaternion.identity);
 
         ballController = split.GetComponent<BallController>();
@@ -176,6 +194,9 @@ public class BallController : MonoBehaviour
         ballController.SpawnHorizontalDirection = spawnDirection;
         ballController.Hp = hp;
         ballController.HpDecreaseEvent += GameManager.Instance.ChangeDamageDecreased;
+
+        ballRigidBody = ballController.GetComponent<Rigidbody>();
+
 
         split.SetActive(true);
     }

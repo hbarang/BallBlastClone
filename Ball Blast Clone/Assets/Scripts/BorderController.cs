@@ -23,6 +23,12 @@ public class BorderController : MonoBehaviour
             transform.position = new Vector3(-screenBounds.x, -screenBounds.y, transform.position.z);
 
         }
+        if(tag == Tags.BorderUpper){
+            transform.position = new Vector3(0, screenBounds.y, transform.position.z);
+        }
+        if(tag == Tags.Ground){
+            transform.position = new Vector3(0, -screenBounds.y+2.5f, transform.position.z);
+        }
     }
 
 }

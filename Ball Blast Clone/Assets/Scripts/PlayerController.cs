@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 3.0f;
-    public float bulletSpawnRate;
+    private int bulletPerSecond = 1;
+    private float bulletSpawnRate;
     public GameObject bulletPrefab;
 
     public delegate void OnPlayerHit();
@@ -28,6 +29,12 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        GameManager.Instance.LevelChangedEvent += ChangeBulletSpawnRate;
+        bulletSpawnRate = 1f / bulletPerSecond;
+        this.transform.position = new Vector3(transform.position.x, -Boundaries.Instance.ScreenBounds.y+3.5f, transform.position.z);
+    }
 
     void Update()
     {
@@ -39,7 +46,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            InvokeRepeating("SpawnBullets", 0.3f, bulletSpawnRate);
+            InvokeRepeating("SpawnBullets",  bulletSpawnRate,  bulletSpawnRate);
         }
 
         if (Input.GetMouseButton(0))
@@ -74,4 +81,13 @@ public class PlayerController : MonoBehaviour
         Instantiate(bulletPrefab, this.transform.position, Quaternion.identity);
     }
 
+
+    void ChangeBulletSpawnRate()
+    {
+        if (bulletPerSecond < GameManager.Instance.BulletPerSecondCap)
+        {
+            bulletPerSecond += GameManager.Instance.gameManagerParameters.bullet_count_increase;
+            bulletSpawnRate = 1f / bulletPerSecond;
+        }
+    }
 }
