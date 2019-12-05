@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject InGameScreenCanvas;
+    public GameObject InGameScreenCanvas, StartScreenCanvas;
     public static UIManager Instance;
     private TextMeshProUGUI DamageDealtText, TotalHpText, LevelText;
+    public Button TouchToPlayButton;
+
     private void Awake()
     {
 
@@ -21,13 +24,17 @@ public class UIManager : MonoBehaviour
             Destroy(Instance);
         }
 
+        DamageDealtText = InGameScreenCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        TotalHpText = InGameScreenCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        LevelText = InGameScreenCanvas.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+
+        TouchToPlayButton = StartScreenCanvas.transform.GetChild(0).GetComponent<Button>();
+
     }
 
     void Start()
     {
-        DamageDealtText = InGameScreenCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        TotalHpText = InGameScreenCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        LevelText = InGameScreenCanvas.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+
 
         DamageDealtText.text = "0";
         TotalHpText.text = GameManager.Instance.CurrentLevelTotalHp.ToString();
@@ -37,6 +44,9 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.CurrentLevelTotalHpChanged += ChangeHpText;
         GameManager.Instance.CurrentLevelDamageChanged += ChangeDamageDealtText;
         GameManager.Instance.LevelChangedEvent += ChangeLevelText;
+        GameManager.Instance.GameStartedEvent += ActivateInGameScreen;
+
+
     }
 
 
@@ -56,11 +66,22 @@ public class UIManager : MonoBehaviour
     }
 
 
-    private void OnDestroy()
+    void OnDestroy()
     {
+
         GameManager.Instance.CurrentLevelDamageChanged -= ChangeDamageDealtText;
         GameManager.Instance.CurrentLevelTotalHpChanged -= ChangeHpText;
         GameManager.Instance.LevelChangedEvent -= ChangeLevelText;
+        GameManager.Instance.GameStartedEvent -= ActivateInGameScreen;
+
+    }
+
+    void ActivateInGameScreen()
+    {
+
+        StartScreenCanvas.gameObject.SetActive(false);
+        InGameScreenCanvas.gameObject.SetActive(true);
+
     }
 
 

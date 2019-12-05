@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     string jsonPath = "Assets/level.json";
     string jsonString;
 
-    private int _currentLevel = 1;
+    private int _currentLevel = 0;
     public int CurrentLevel
     {
         get
@@ -112,6 +112,25 @@ public class GameManager : MonoBehaviour
     public delegate void OnCurrentLevelHpDecreaseChange(int damage);
     public event OnCurrentLevelHpDecreaseChange CurrentLevelDamageChanged;
 
+    private bool _gameStarted = false;
+    public bool GameStarted
+    {
+        get
+        {
+            return _gameStarted;
+        }
+        set
+        {
+            _gameStarted = value;
+            if (value)
+            {
+                GameStartedEvent();
+            }
+        }
+    }
+    public delegate void OnGameStart();
+    public event OnGameStart GameStartedEvent;
+    
 
     void Awake()
     {
@@ -134,14 +153,19 @@ public class GameManager : MonoBehaviour
     {
         LoadJson();
         Physics.gravity = new Vector3(0, gameManagerParameters.gravity, 0);
-        SpawnBall();
         setLevel5Hp();
 
         LevelChangedEvent += SpawnBall;
         LevelChangedEvent += ChangeBulletDamage;
+        UIManager.Instance.TouchToPlayButton.onClick.AddListener(StartGame);
 
     }
 
+    void StartGame()
+    {
+        CurrentLevel = 1;
+        GameStarted = true;
+    }
 
 
     void setLevel5Hp()
