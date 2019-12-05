@@ -110,6 +110,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   bulletDamage: 0
+  HitEffect: {fileID: 802758214720294325, guid: 5e8aa34cfda83684e9ee55b8400a6bb8,
+    type: 3}
 --- !u!54 &4165106069504169602
 Rigidbody:
   m_ObjectHideFlags: 0

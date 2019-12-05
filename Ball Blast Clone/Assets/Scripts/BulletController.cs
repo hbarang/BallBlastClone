@@ -9,6 +9,8 @@ public class BulletController : MonoBehaviour
 
     public int bulletDamage;
 
+    public GameObject HitEffect;
+
 
     private void Start()
     {
@@ -37,10 +39,19 @@ public class BulletController : MonoBehaviour
 
     private void OnDestroy()
     {
-        
+
         GameManager.Instance.LevelChangedEvent -= DeleteBullet;
         PlayerController.Instance.PlayerHitEvent -= DeleteBullet;
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+
+        if (other.gameObject.tag == Tags.Ball)
+        {
+            Instantiate(HitEffect, transform.position, Quaternion.identity);
+        }
     }
 
 }

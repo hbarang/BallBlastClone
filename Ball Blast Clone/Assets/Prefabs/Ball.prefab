@@ -205,6 +205,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splits: 0500000005000000
   ballPrefab: {fileID: 2775716766912364957}
+  BallDestroyEffect: {fileID: 6199466685791117952, guid: 52891c8d0549e4d4e845c909de1638eb,
+    type: 3}
 --- !u!1 &2775716766962172446
 GameObject:
   m_ObjectHideFlags: 0
