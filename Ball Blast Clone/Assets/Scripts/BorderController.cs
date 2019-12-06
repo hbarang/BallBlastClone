@@ -5,30 +5,42 @@ using UnityEngine;
 public class BorderController : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Vector2 screenBounds;
 
-    private void Awake()
-    {
-        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
-    }
 
     void Start()
     {
+        AdjustPosition();
+        Boundaries.Instance.OnScreenBoundsChangeEvent += AdjustPosition;
+    }
+
+    void AdjustPosition()
+    {
+
         if (tag == Tags.BorderRight)
         {
-            transform.position = new Vector3(screenBounds.x, -screenBounds.y, transform.position.z);
+            transform.position = new Vector3(Boundaries.Instance.ScreenBounds.x, -Boundaries.Instance.ScreenBounds.y, transform.position.z);
         }
         if (tag == Tags.BorderLeft)
         {
-            transform.position = new Vector3(-screenBounds.x, -screenBounds.y, transform.position.z);
+            transform.position = new Vector3(-Boundaries.Instance.ScreenBounds.x, -Boundaries.Instance.ScreenBounds.y, transform.position.z);
 
         }
-        if(tag == Tags.BorderUpper){
-            transform.position = new Vector3(0, screenBounds.y, transform.position.z);
+        if (tag == Tags.BorderUpper)
+        {
+            transform.position = new Vector3(0, Boundaries.Instance.ScreenBounds.y, transform.position.z);
         }
-        if(tag == Tags.Ground){
-            transform.position = new Vector3(0, -screenBounds.y+2.5f, transform.position.z);
+        if (tag == Tags.Ground)
+        {
+            transform.position = new Vector3(0, -Boundaries.Instance.ScreenBounds.y + 2.5f, transform.position.z);
         }
+        
+    }
+
+    private void OnDestroy()
+    {
+
+        Boundaries.Instance.OnScreenBoundsChangeEvent -= AdjustPosition;
+
     }
 
 }
