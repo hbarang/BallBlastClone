@@ -33,30 +33,66 @@ public class PlayerController : MonoBehaviour
     {
         GameManager.Instance.LevelChangedEvent += ChangeBulletSpawnRate;
         bulletSpawnRate = 1f / bulletPerSecond;
-        this.transform.position = new Vector3(transform.position.x, -Boundaries.Instance.ScreenBounds.y+3.5f, transform.position.z);
+        this.transform.position = new Vector3(transform.position.x, -Boundaries.Instance.ScreenBounds.y + 3.5f, transform.position.z);
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+
+        if (Input.touchSupported)
         {
-            CancelInvoke();
+
+            if (Input.touchCount > 0)
+            {
+                Touch input = Input.touches[0];
+
+                if (input.phase == TouchPhase.Began)
+                {
+                    InvokeRepeating("SpawnBullets", bulletSpawnRate, bulletSpawnRate);
+                }
+
+                if (input.phase == TouchPhase.Moved)
+                {
+                    float step = speed * Time.deltaTime;
+                    Vector3 target = transform.position;
+                    float targetXValue = Camera.main.ScreenToWorldPoint(input.position).x;
+                    target.x = targetXValue > Boundaries.Instance.ScreenBounds.x ? Boundaries.Instance.ScreenBounds.x : targetXValue < -Boundaries.Instance.ScreenBounds.x ? -Boundaries.Instance.ScreenBounds.x : targetXValue;
+                    transform.position = Vector3.MoveTowards(transform.position, target, step);
+                }
+                
+                if (input.phase == TouchPhase.Ended)
+                {
+                    CancelInvoke();
+                }
+
+            }
 
         }
 
-        if (Input.GetMouseButtonDown(0))
+        else
         {
-            InvokeRepeating("SpawnBullets",  bulletSpawnRate,  bulletSpawnRate);
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                CancelInvoke();
+
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                InvokeRepeating("SpawnBullets", bulletSpawnRate, bulletSpawnRate);
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                float step = speed * Time.deltaTime;
+                Vector3 target = transform.position;
+                float targetXValue = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+                target.x = targetXValue > Boundaries.Instance.ScreenBounds.x ? Boundaries.Instance.ScreenBounds.x : targetXValue < -Boundaries.Instance.ScreenBounds.x ? -Boundaries.Instance.ScreenBounds.x : targetXValue;
+                transform.position = Vector3.MoveTowards(transform.position, target, step);
+            }
         }
 
-        if (Input.GetMouseButton(0))
-        {
-            float step = speed * Time.deltaTime;
-            Vector3 target = transform.position;
-            float targetXValue = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-            target.x = targetXValue > Boundaries.Instance.ScreenBounds.x ? Boundaries.Instance.ScreenBounds.x : targetXValue < -Boundaries.Instance.ScreenBounds.x ? -Boundaries.Instance.ScreenBounds.x : targetXValue;
-            transform.position = Vector3.MoveTowards(transform.position, target, step);
-        }
 
 
     }
