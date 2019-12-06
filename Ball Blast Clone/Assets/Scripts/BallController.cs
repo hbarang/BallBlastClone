@@ -152,7 +152,6 @@ public class BallController : MonoBehaviour
         if (other.gameObject.GetComponent<BulletController>() != null && this != null)
         {
             Hp -= other.gameObject.GetComponent<BulletController>().bulletDamage;
-            Destroy(other.gameObject);
         }
     }
 

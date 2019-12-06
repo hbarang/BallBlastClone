@@ -176,7 +176,7 @@ public class GameManager : MonoBehaviour
     {
         LoadJson();
         Physics.gravity = new Vector3(0, gameManagerParameters.gravity, 0);
-        setLevelCapHp();
+        SetLevelCapHp();
 
         LevelChangedEvent += SpawnBall;
         LevelChangedEvent += ChangeBulletDamage;
@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    void setLevelCapHp()
+    void SetLevelCapHp()
     {
         foreach (Ball item in gameManagerParameters.levels[HandPickedLevelCap - 1].balls)
         {

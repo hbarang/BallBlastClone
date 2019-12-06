@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
     void SpawnBullets()
     {
-        Instantiate(bulletPrefab, this.transform.position, Quaternion.identity);
+        BulletFactory.Instance.GetBullet(this.transform.position);
     }
 
 

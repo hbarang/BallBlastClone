@@ -26,15 +26,15 @@ public class BulletController : MonoBehaviour
 
         if (transform.position.y > Boundaries.Instance.ScreenBounds.y)
         {
-            Destroy(this.gameObject);
+            BulletFactory.Instance.ReleaseBullet(this.gameObject);
         }
 
     }
 
 
-    void DeleteBullet()
+    public void DeleteBullet()
     {
-        Destroy(this.gameObject);
+        BulletFactory.Instance.ReleaseBullet(this.gameObject);
     }
 
     private void OnDestroy()
@@ -50,6 +50,7 @@ public class BulletController : MonoBehaviour
 
         if (other.gameObject.tag == Tags.Ball)
         {
+            DeleteBullet();
             Instantiate(HitEffect, transform.position, Quaternion.identity);
         }
     }
