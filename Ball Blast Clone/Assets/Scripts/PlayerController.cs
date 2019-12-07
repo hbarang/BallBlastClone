@@ -26,6 +26,10 @@ public class PlayerController : MonoBehaviour
             Destroy(Instance);
         }
 
+        Debug.Log(Camera.main.aspect);
+        Camera.main.orthographicSize = 3 / Camera.main.aspect;
+
+
     }
 
     private void Start()
@@ -116,7 +120,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private float playerObjectHalfSize = 0.3f;
+    private float playerObjectHalfSize = 0.25f;
     void ChangePlayerPosition(float xPosition)
     {
 
