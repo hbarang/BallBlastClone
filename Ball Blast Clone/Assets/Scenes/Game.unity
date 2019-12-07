@@ -2560,7 +2560,6 @@ GameObject:
   - component: {fileID: 1256397789}
   - component: {fileID: 1256397790}
   - component: {fileID: 1256397791}
-  - component: {fileID: 1256397792}
   m_Layer: 0
   m_Name: ScriptHolder
   m_TagString: Untagged
@@ -2653,24 +2652,6 @@ MonoBehaviour:
     type: 3}
   HitEffectPrefab: {fileID: 802758214720294325, guid: 5e8aa34cfda83684e9ee55b8400a6bb8,
     type: 3}
---- !u!114 &1256397792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256397786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a13bf81548aadc4da819c3c3aa5f925, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BallScale: {x: 1, y: 1, z: 1}
-  PlayerScale: {x: 0.5, y: 0.5, z: 0.5}
-  originalWidth: 480
-  originalHeight: 800
-  currentWidth: 0
-  widthFactor: 0
 --- !u!1 &1472286601
 GameObject:
   m_ObjectHideFlags: 0
