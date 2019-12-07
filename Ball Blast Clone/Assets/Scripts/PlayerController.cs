@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 4.0f;
+    public float speed;
     private int bulletPerSecond = 1;
     private float bulletSpawnRate;
-    public GameObject bulletPrefab;
 
     public delegate void OnPlayerHit();
     public event OnPlayerHit PlayerHitEvent;
 
     public static PlayerController Instance;
 
-    private float originalResolutionScale = 0.6f;
 
     private void Awake()
     {
@@ -34,7 +32,7 @@ public class PlayerController : MonoBehaviour
     {
         GameManager.Instance.LevelChangedEvent += ChangeBulletSpawnRate;
         bulletSpawnRate = 1f / bulletPerSecond;
-        this.transform.position = new Vector3(transform.position.x, -Boundaries.Instance.ScreenBounds.y + 3.5f, transform.position.z);        
+        this.transform.position = new Vector3(transform.position.x, -Boundaries.Instance.ScreenBounds.y + 3.5f, transform.position.z);
     }
 
     void Update()
@@ -46,18 +44,11 @@ public class PlayerController : MonoBehaviour
             if (Input.touchCount > 0)
             {
                 Touch input = Input.touches[0];
+                ChangePlayerPosition(Camera.main.ScreenToWorldPoint(input.position).x);
 
                 if (input.phase == TouchPhase.Began)
                 {
-                    ChangePlayerPosition(Camera.main.ScreenToWorldPoint(input.position).x);
                     InvokeRepeating("SpawnBullets", bulletSpawnRate, bulletSpawnRate);
-                }
-
-                if (input.phase == TouchPhase.Moved)
-                {
-
-                    ChangePlayerPosition(Camera.main.ScreenToWorldPoint(input.position).x);
-
                 }
 
                 if (input.phase == TouchPhase.Ended)
@@ -133,6 +124,7 @@ public class PlayerController : MonoBehaviour
         Vector3 target = transform.position;
         target.x = xPosition > Boundaries.Instance.ScreenBounds.x - playerObjectHalfSize ? Boundaries.Instance.ScreenBounds.x - playerObjectHalfSize : xPosition < -Boundaries.Instance.ScreenBounds.x + playerObjectHalfSize ? -Boundaries.Instance.ScreenBounds.x + playerObjectHalfSize : xPosition;
         transform.position = Vector3.MoveTowards(transform.position, target, step);
+
 
     }
 }

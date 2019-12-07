@@ -2179,7 +2179,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 122
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!65 &1093650113
 BoxCollider:
@@ -2267,9 +2267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5321ab47d511344a82f734018823a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  bulletPrefab: {fileID: 4165106069504169605, guid: 0f7457ce7dcbd4d49aa0b8ff00889369,
-    type: 3}
+  speed: 10
 --- !u!1 &1105899443
 GameObject:
   m_ObjectHideFlags: 0
