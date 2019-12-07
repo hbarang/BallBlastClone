@@ -11,8 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject ballPrefab;
     Vector3 spawnPosition;
 
-    string jsonPath = "Assets/level.json";
-    string jsonString;
+    string jsonPath = "level";
 
     List<GameObject> InstantiatedBalls;
 
@@ -183,7 +182,7 @@ public class GameManager : MonoBehaviour
 
         PlayerController.Instance.PlayerHitEvent += ReplayLevel;
 
-        UIManager.Instance.TouchToPlayButton.onClick.AddListener(StartGame);
+        //UIManager.Instance.TouchToPlayButton.onClick.AddListener(StartGame);
 
         InstantiatedBalls = new List<GameObject>();
         Time.timeScale = 0f;
@@ -194,8 +193,9 @@ public class GameManager : MonoBehaviour
     }
 
 
-    void StartGame()
+    public void StartGame()
     {
+
         CurrentLevel = 1;
         GameStarted = true;
         Time.timeScale = 1f;
@@ -214,8 +214,10 @@ public class GameManager : MonoBehaviour
 
     public void LoadJson()
     {
-        jsonString = File.ReadAllText(jsonPath);
-        gameManagerParameters = GameManagerParameters.CreateFromJSON(jsonString);
+
+        TextAsset levelFile = Resources.Load(jsonPath) as TextAsset;
+        gameManagerParameters = GameManagerParameters.CreateFromJSON(levelFile);
+        
     }
 
 
@@ -287,6 +289,7 @@ public class GameManager : MonoBehaviour
 
     public void IndividualBallSpawn(Vector3 spawnPosition, int hp, int[] splits, Vector3 SpawnDirection, bool splittable, int delay)
     {
+
         GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
         InstantiatedBalls.Add(ball);
         BallController ballController = ball.GetComponent<BallController>();

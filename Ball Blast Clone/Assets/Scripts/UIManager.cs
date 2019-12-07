@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
 
         PlayerController.Instance.PlayerHitEvent += ActivateGameLostScreen;
 
-
+        
         GameWonReplayButton.onClick.AddListener(GameWonReplayButtonClicked);
         GameLostReplayButton.onClick.AddListener(GameLostReplayButtonClicked);
     }

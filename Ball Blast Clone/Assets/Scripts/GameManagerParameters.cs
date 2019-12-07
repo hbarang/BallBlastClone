@@ -12,8 +12,8 @@ public class GameManagerParameters
     public int bullet_count_increase;
     public int bullet_damage_increase;
 
-    public static GameManagerParameters CreateFromJSON(string jsonString)
+    public static GameManagerParameters CreateFromJSON(TextAsset jsonString)
     {
-        return JsonUtility.FromJson<GameManagerParameters>(jsonString);
+        return JsonUtility.FromJson<GameManagerParameters>(jsonString.text);
     }
 }
