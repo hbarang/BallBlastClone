@@ -48,18 +48,17 @@ public class PlayerController : MonoBehaviour
 
                 if (input.phase == TouchPhase.Began)
                 {
+                    ChangePlayerPosition(Camera.main.ScreenToWorldPoint(input.position).x);
                     InvokeRepeating("SpawnBullets", bulletSpawnRate, bulletSpawnRate);
                 }
 
                 if (input.phase == TouchPhase.Moved)
                 {
-                    float step = speed * Time.deltaTime;
-                    Vector3 target = transform.position;
-                    float targetXValue = Camera.main.ScreenToWorldPoint(input.position).x;
-                    target.x = targetXValue > Boundaries.Instance.ScreenBounds.x ? Boundaries.Instance.ScreenBounds.x : targetXValue < -Boundaries.Instance.ScreenBounds.x ? -Boundaries.Instance.ScreenBounds.x : targetXValue;
-                    transform.position = Vector3.MoveTowards(transform.position, target, step);
+
+                    ChangePlayerPosition(Camera.main.ScreenToWorldPoint(input.position).x);
+
                 }
-                
+
                 if (input.phase == TouchPhase.Ended)
                 {
                     CancelInvoke();
@@ -85,11 +84,9 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetMouseButton(0))
             {
-                float step = speed * Time.deltaTime;
-                Vector3 target = transform.position;
-                float targetXValue = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-                target.x = targetXValue > Boundaries.Instance.ScreenBounds.x ? Boundaries.Instance.ScreenBounds.x : targetXValue < -Boundaries.Instance.ScreenBounds.x ? -Boundaries.Instance.ScreenBounds.x : targetXValue;
-                transform.position = Vector3.MoveTowards(transform.position, target, step);
+
+                ChangePlayerPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition).x);
+
             }
         }
 
@@ -125,5 +122,16 @@ public class PlayerController : MonoBehaviour
             bulletPerSecond += GameManager.Instance.gameManagerParameters.bullet_count_increase;
             bulletSpawnRate = 1f / bulletPerSecond;
         }
+    }
+
+    private float playerObjectHalfSize = 0.3f;
+    void ChangePlayerPosition(float xPosition)
+    {
+
+        float step = speed * Time.deltaTime;
+        Vector3 target = transform.position;
+        target.x = xPosition > Boundaries.Instance.ScreenBounds.x - playerObjectHalfSize ? Boundaries.Instance.ScreenBounds.x - playerObjectHalfSize : xPosition < -Boundaries.Instance.ScreenBounds.x + playerObjectHalfSize ? -Boundaries.Instance.ScreenBounds.x + playerObjectHalfSize : xPosition;
+        transform.position = Vector3.MoveTowards(transform.position, target, step);
+
     }
 }

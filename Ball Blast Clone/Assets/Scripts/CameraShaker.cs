@@ -36,7 +36,7 @@ public class CameraShaker : MonoBehaviour
             //float y = Random.Range(-1f, 1f) * magnitude;
 
             transform.localPosition = new Vector3(x, originalPosition.y, originalPosition.z);
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
 
             yield return null;
         }

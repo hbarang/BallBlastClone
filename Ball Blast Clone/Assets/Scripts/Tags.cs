@@ -1,6 +1,6 @@
 
 
-public static class Tags{
+public struct Tags{
     public static string BorderLeft = "BorderLeft";
     public static string BorderRight = "BorderRight";
     public static string BorderUpper = "BorderUpper";
