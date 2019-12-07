@@ -9,8 +9,6 @@ public class BulletController : MonoBehaviour
 
     public int bulletDamage;
 
-    public GameObject HitEffect;
-
 
     private void Start()
     {
@@ -26,7 +24,7 @@ public class BulletController : MonoBehaviour
 
         if (transform.position.y > Boundaries.Instance.ScreenBounds.y)
         {
-            BulletFactory.Instance.ReleaseBullet(this.gameObject);
+            GameObjectFactory.Instance.ReleaseBullet(this.gameObject);
         }
 
     }
@@ -34,7 +32,7 @@ public class BulletController : MonoBehaviour
 
     public void DeleteBullet()
     {
-        BulletFactory.Instance.ReleaseBullet(this.gameObject);
+        GameObjectFactory.Instance.ReleaseBullet(this.gameObject);
     }
 
     private void OnDestroy()
@@ -51,7 +49,7 @@ public class BulletController : MonoBehaviour
         if (other.gameObject.tag == Tags.Ball)
         {
             DeleteBullet();
-            Instantiate(HitEffect, transform.position, Quaternion.identity);
+            GameObjectFactory.Instance.CreateHitEffect(transform.position);
         }
     }
 

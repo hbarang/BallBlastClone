@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
 
     void SpawnBullets()
     {
-        BulletFactory.Instance.GetBullet(this.transform.position);
+        GameObjectFactory.Instance.GetBullet(this.transform.position);
     }
 
 

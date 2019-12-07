@@ -25,7 +25,7 @@ public class Boundaries : MonoBehaviour
     public delegate void OnScreenBoundsChange();
     public event OnScreenBoundsChange OnScreenBoundsChangeEvent;
 
-    Resolution res;
+    float originalCameraAspect;
 
 
     public static Boundaries Instance;
@@ -42,8 +42,7 @@ public class Boundaries : MonoBehaviour
             Destroy(Instance);
         }
 
-        res = Screen.currentResolution;
-
+        originalCameraAspect = Camera.main.aspect;
         ScreenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
 
     }
@@ -52,9 +51,12 @@ public class Boundaries : MonoBehaviour
     private void Update()
     {
 
-        if (res.height != Screen.height || res.width != Screen.width)
+        if (originalCameraAspect != Camera.main.aspect)
         {
+
             ScreenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+            originalCameraAspect = Camera.main.aspect;
+            
         }
 
     }

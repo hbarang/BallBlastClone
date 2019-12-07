@@ -6,16 +6,21 @@ public class VFXController : MonoBehaviour
 {
 
     public float lifeTime;
-    void Start()
-    {
-        StartCoroutine(WaitForDestroy(lifeTime));
-    }
 
     IEnumerator WaitForDestroy(float delay)
     {
 
         yield return new WaitForSeconds(delay);
-        Destroy(this.gameObject);
+        GetComponent<ParticleSystem>().Clear();
+        GameObjectFactory.Instance.ReleaseHitEffect(this.gameObject);
+        this.gameObject.SetActive(false);
+
+    }
+
+    public void CallCoroutine()
+    {
+
+        StartCoroutine(WaitForDestroy(lifeTime));
 
     }
 
