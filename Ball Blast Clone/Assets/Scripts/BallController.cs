@@ -170,12 +170,13 @@ public class BallController : MonoBehaviour
 
             CreateBall(splits[0], upperRight);
             CreateBall(splits[1], upperLeft);
-
+            CameraShaker.Instance.Shake(0.02f);
             Destroy(this.gameObject);
 
         }
         else
         {
+            CameraShaker.Instance.Shake(0.04f);
             Destroy(this.gameObject);
         }
     }
