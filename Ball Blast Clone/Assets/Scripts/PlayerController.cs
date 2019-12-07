@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 3.0f;
+    public float speed = 4.0f;
     private int bulletPerSecond = 1;
     private float bulletSpawnRate;
     public GameObject bulletPrefab;
@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 
     public static PlayerController Instance;
 
+    private float originalResolutionScale = 0.6f;
 
     private void Awake()
     {
@@ -33,7 +34,7 @@ public class PlayerController : MonoBehaviour
     {
         GameManager.Instance.LevelChangedEvent += ChangeBulletSpawnRate;
         bulletSpawnRate = 1f / bulletPerSecond;
-        this.transform.position = new Vector3(transform.position.x, -Boundaries.Instance.ScreenBounds.y + 3.5f, transform.position.z);
+        this.transform.position = new Vector3(transform.position.x, -Boundaries.Instance.ScreenBounds.y + 3.5f, transform.position.z);        
     }
 
     void Update()

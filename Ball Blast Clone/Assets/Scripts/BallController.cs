@@ -197,6 +197,7 @@ public class BallController : MonoBehaviour
 
         ballRigidBody = ballController.GetComponent<Rigidbody>();
 
+        split.transform.localScale = (transform.localScale/3)*2;
 
         split.SetActive(true);
     }
